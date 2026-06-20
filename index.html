@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="slides-format" content="viewport">
+    <title>AI 時代 SEO 進化論 | Alice × Summer 課堂分享</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;700;900&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --color-bg: #0d0f1a;
+            --color-bg-deep: #07080f;
+            --color-surface: #151828;
+            --color-text: #f0f2ff;
+            --color-text-secondary: #b8bde0;
+            --color-text-muted: #6b72a8;
+            --color-accent-1: #7c6bff;
+            --color-accent-2: #ff6b9d;
+            --color-accent-3: #00d4aa;
+            --color-glass-bg: rgba(255,255,255,0.05);
+            --color-glass-border: rgba(255,255,255,0.08);
+            --color-vignette: rgba(0,0,0,0.5);
+            --font-display: "Noto Serif TC", serif;
+            --font-body: "Noto Sans TC", sans-serif;
+        }
+    </style>
+    <style>
+        :root{--color-bg:#0d0f1a;--color-text:#f0f2ff;--glow-color-rgb:124,107,255;}
+        *,*::before,*::after{box-sizing:border-box;}
+        html,body{background:var(--color-bg);margin:0;}
+        body{font-family:"Noto Sans TC",sans-serif;color:var(--color-text);overflow:hidden;height:100vh;width:100vw;}
+        .deck{width:100vw;height:100vh;position:relative;}
+        .slide{position:absolute;top:0;left:0;width:100%;height:100%;background:var(--color-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:scale(0.95);transition:opacity 0.7s ease,transform 0.7s ease;pointer-events:none;overflow:hidden;}
+        .slide.active{opacity:1;transform:scale(1);pointer-events:all;}
+        .slide>.content{position:relative;z-index:2;width:100%;max-width:1100px;padding:clamp(1.5rem,4vw,3.5rem);}
+        .nav-controls{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:16px;z-index:100;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);padding:10px 24px;border-radius:40px;border:1px solid rgba(255,255,255,0.08);}
+        .nav-btn{width:40px;height:40px;border:none;background:rgba(255,255,255,0.06);color:#7c6bff;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.3s;}
+        .nav-btn:hover{background:rgba(124,107,255,0.2);}
+        .slide-dots{display:flex;gap:8px;}
+        .slide-dots .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.15);cursor:pointer;transition:background 0.3s,transform 0.3s;}
+        .slide-dots .dot.active{background:#7c6bff;transform:scale(1.3);}
+        .slide-counter{font-size:0.75rem;color:#6b72a8;min-width:40px;text-align:center;}
+        .reveal{opacity:0;transform:translateY(20px);}
+        @keyframes float-slow{0%{transform:translate(0,0) scale(1)}25%{transform:translate(60px,-50px) scale(1.12)}50%{transform:translate(-40px,40px) scale(0.9)}75%{transform:translate(50px,20px) scale(1.08)}100%{transform:translate(0,0) scale(1)}}
+        @keyframes float-drift{0%{transform:translate(0,0) scale(1) rotate(0deg)}33%{transform:translate(-50px,-60px) scale(1.15) rotate(3deg)}66%{transform:translate(40px,30px) scale(0.88) rotate(-2deg)}100%{transform:translate(0,0) scale(1) rotate(0deg)}}
+        @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+        .gradient-mesh{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
+        .blob{position:absolute;border-radius:50%;filter:blur(90px);animation:float-slow 12s ease-in-out infinite;}
+        .blob:nth-child(2){animation:float-drift 16s ease-in-out infinite;}
+        .blob:nth-child(3){animation:float-slow 20s ease-in-out infinite reverse;}
+        .slide::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,0.5) 100%);}
+        .gc{background:rgba(255,255,255,0.05);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);border-radius:16px;}
+        .pill{display:inline-block;padding:3px 12px;border-radius:20px;font-size:0.7rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+        .pp{background:rgba(124,107,255,0.15);color:#a99bff;border:1px solid rgba(124,107,255,0.25);}
+        .ppk{background:rgba(255,107,157,0.15);color:#ff9eca;border:1px solid rgba(255,107,157,0.25);}
+        .pt{background:rgba(0,212,170,0.15);color:#00d4aa;border:1px solid rgba(0,212,170,0.25);}
+        .pr{background:rgba(255,80,80,0.12);color:#ff8888;border:1px solid rgba(255,80,80,0.2);}
+        .gt{background:linear-gradient(135deg,#a99bff,#ff9eca,#00d4aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .gt2{background:linear-gradient(90deg,#7c6bff,#ff6b9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .gt3{background:linear-gradient(90deg,#7c6bff,#00d4aa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+        .bl{border-left:3px solid #7c6bff;}.blp{border-left:3px solid #ff6b9d;}.blt{border-left:3px solid #00d4aa;}
+        .bt{border-top:2px solid #7c6bff;}.btp{border-top:2px solid #ff6b9d;}.btt{border-top:2px solid #00d4aa;}
+        .g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+        .g3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+        .p4{padding:1rem;}.p5{padding:1.25rem;}.p6{padding:1.5rem;}
+        .mb{margin-bottom:1rem;}.mb2{margin-bottom:1.4rem;}.mb3{margin-bottom:1.8rem;}
+        .fam{font-family:Noto Serif TC,serif;}
+        .h2s{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;line-height:1.4;}
+        .tc{text-align:center;}
+        @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.2s !important;}}
+    </style>
+</head>
+<body>
+<div class="mouse-spotlight" style="position:fixed;inset:0;z-index:99;pointer-events:none;"></div>
+<div class="deck">
+
+<!-- S1 TITLE -->
+<div class="slide active" data-slide="1">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:520px;height:520px;top:-120px;right:-80px;background:#7c6bff;opacity:0.18;"></div>
+        <div class="blob" style="width:350px;height:350px;bottom:-80px;left:-60px;background:#ff6b9d;opacity:0.14;"></div>
+        <div class="blob" style="width:220px;height:220px;top:40%;left:10%;background:#00d4aa;opacity:0.10;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content tc">
+        <div style="font-size:76px;animation:float 3.5s ease-in-out infinite;margin-bottom:1.2rem;" class="reveal">🔍</div>
+        <div class="pill pp reveal mb">Summer × Alice｜SEO 30分鐘實戰 2026.6.23</div>
+        <h1 style="font-family:Noto Serif TC,serif;font-size:clamp(2rem,5.5vw,3.8rem);font-weight:900;line-height:1.3;margin-bottom:1rem;" class="reveal gt">你已經會用 AI 寫 SEO 文了<br>但你的內容在賺錢嗎？</h1>
+        <p style="font-size:clamp(0.8rem,1.4vw,1rem);color:#6b72a8;letter-spacing:4px;text-transform:uppercase;" class="reveal">從流量到成交的 AI SEO 升級地圖</p>
+    </div>
+</div>
+
+<!-- S2 打破迷思 -->
+<div class="slide" data-slide="2">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:400px;height:400px;top:-100px;right:-60px;background:#7c6bff;opacity:0.10;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-40px;background:#ff6b9d;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="pill pr reveal mb">迷思破解</div>
+        <h2 class="fam h2s reveal mb2">你在 Google 首頁了，<span class="gt2">然後呢？</span></h2>
+        <div class="g2">
+            <div class="gc bl p5 reveal">
+                <div class="pill pr mb">迷思 1</div>
+                <p style="font-weight:700;font-size:0.95rem;margin-bottom:0.4rem;">排到第一頁就夠了</p>
+                <p style="font-size:0.8rem;color:#b8bde0;line-height:1.7;">AI 摘要區塊高達 <strong style="color:#ff9eca;">1,200px</strong>，比螢幕可視範圍還高——你辛苦拿到的排名，被擠到看不見的地方</p>
+            </div>
+            <div class="gc blp p5 reveal">
+                <div class="pill pr mb">迷思 2</div>
+                <p style="font-weight:700;font-size:0.95rem;margin-bottom:0.4rem;">AI 量產文章 = 有流量</p>
+                <p style="font-size:0.8rem;color:#b8bde0;line-height:1.7;">只有 <strong style="color:#ff9eca;">17%</strong> 的 AI 引用來源同時在傳統搜尋前 10 名——AI 和 Google 選擇標準根本不一樣</p>
+            </div>
+            <div class="gc blt p5 reveal" style="grid-column:1/-1;">
+                <div class="pill pt mb">真正的問題</div>
+                <p style="font-weight:700;font-size:0.95rem;margin-bottom:0.4rem;">你的內容是「免費維修顧問」還是「24 小時業務員」？</p>
+                <p style="font-size:0.8rem;color:#b8bde0;line-height:1.7;">流量和訂單之間差的不是文章數量，而是：<strong style="color:#00d4aa;">搜尋意圖 × 商業情境 × 清晰結構</strong>。大家都會用 AI 寫，這才是真正的護城河。</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S3 核心公式 -->
+<div class="slide" data-slide="3">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:420px;height:420px;top:-80px;left:-80px;background:#7c6bff;opacity:0.12;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-60px;right:-40px;background:#00d4aa;opacity:0.10;"></div>
+    </div>
+    <div class="content">
+        <div class="pill pp reveal mb">核心公式</div>
+        <h2 class="fam h2s reveal mb3">讓 AI 引用你、讓客戶買單的<span class="gt3"> 三乘公式</span></h2>
+        <div class="g3" style="margin-bottom:1.4rem;">
+            <div class="gc bt p5 reveal tc">
+                <div style="font-size:2.2rem;margin-bottom:0.5rem;">🎯</div>
+                <p style="font-family:Noto Serif TC,serif;font-weight:700;color:#a99bff;font-size:1rem;margin-bottom:0.4rem;">搜尋意圖</p>
+                <p style="font-size:0.75rem;color:#b8bde0;line-height:1.7;">客戶在比價？還是在準備付錢？同一主題、不同切入，對象完全不同</p>
+            </div>
+            <div class="gc btp p5 reveal tc">
+                <div style="font-size:2.2rem;margin-bottom:0.5rem;">💡</div>
+                <p style="font-family:Noto Serif TC,serif;font-weight:700;color:#ff9eca;font-size:1rem;margin-bottom:0.4rem;">商業情境</p>
+                <p style="font-size:0.75rem;color:#b8bde0;line-height:1.7;">你在解決小麻煩，還是幫他決定把預算給你？這是業績的分水嶺</p>
+            </div>
+            <div class="gc btt p5 reveal tc">
+                <div style="font-size:2.2rem;margin-bottom:0.5rem;">🏗️</div>
+                <p style="font-family:Noto Serif TC,serif;font-weight:700;color:#00d4aa;font-size:1rem;margin-bottom:0.4rem;">清晰結構</p>
+                <p style="font-size:0.75rem;color:#b8bde0;line-height:1.7;">模組化 Chunking 讓 AI 相關性評分提升 15.4%——AI 看不懂你的結構，就不引用你</p>
+            </div>
+        </div>
+        <div class="gc bl p4 reveal">
+            <p style="font-size:0.83rem;color:#b8bde0;line-height:1.8;">💬 <strong style="color:#a99bff;">每次下 AI 指令前先問自己：</strong>「這篇文章，是在幫對方解決小麻煩，還是幫他判斷該不該把預算給你？」</p>
+        </div>
+    </div>
+</div>
+
+<!-- S4 醫師 YMYL -->
+<div class="slide" data-slide="4">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;right:-60px;background:#ff6b9d;opacity:0.10;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-50px;left:-30px;background:#7c6bff;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="pill ppk reveal mb">族群 A｜醫師 &amp; YMYL 健康個人品牌</div>
+        <h2 class="fam h2s reveal mb2">E-E-A-T 不是叫你<span style="color:#ff9eca;">貼滿認證</span>，<br>是把看診經驗變成<span style="color:#ff9eca;">可驗證的結構</span></h2>
+        <div class="g2" style="margin-bottom:0.9rem;">
+            <div class="gc p5 reveal">
+                <div class="pill pr mb">❌ 大家都在寫</div>
+                <p style="font-size:0.88rem;color:#ff8888;font-weight:600;margin-bottom:0.3rem;">「矯正是什麼？為什麼要做矯正？」</p>
+                <p style="font-size:0.77rem;color:#b8bde0;line-height:1.7;">所有人都在寫，AI 不缺這種內容，你被引用的機率接近零</p>
+            </div>
+            <div class="gc p5 reveal">
+                <div class="pill pt mb">✅ 讓 AI 選中你</div>
+                <p style="font-size:0.88rem;color:#00d4aa;font-weight:600;margin-bottom:0.3rem;">「中壢家長最常問我的 3 個兒童矯正問題」</p>
+                <p style="font-size:0.77rem;color:#b8bde0;line-height:1.7;">鎖定本地 × 鎖定決策者（家長非孩子）× 鎖定採購階段</p>
+            </div>
+        </div>
+        <div class="gc bl p4 reveal" style="margin-bottom:0.8rem;">
+            <p style="font-size:0.76rem;color:#6b72a8;margin-bottom:0.3rem;">🤖 AI 指令模板</p>
+            <p style="font-size:0.8rem;color:#a99bff;line-height:1.8;">"你是一位矯正牙醫，目標讀者是有學齡兒童的家長，請用問答格式設計一篇『兒童矯正黃金時機』的大綱，每個 H2 對應家長在諮詢前會搜尋的真實問題，並標出 <strong style="color:#00d4aa;">認知 / 評估 / 決策</strong> 哪個階段"</p>
+        </div>
+        <p style="font-size:0.75rem;color:#6b72a8;" class="reveal">📌 <strong style="color:#b8bde0;">Podcast 學員：</strong>Show Notes 不是逐字稿——把每集最好的一個答案做成「問答結構頁」，讓 AI 可以直接引用一段話</p>
+    </div>
+</div>
+
+<!-- S5 一人品牌 -->
+<div class="slide" data-slide="5">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:360px;height:360px;top:-80px;left:-60px;background:#00d4aa;opacity:0.10;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-40px;right:-30px;background:#7c6bff;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="pill pt reveal mb">族群 B｜一人品牌 × 生命產業 × 身心靈</div>
+        <h2 class="fam h2s reveal mb2">搜尋量少的主題，<span style="color:#00d4aa;">AI 搜尋代替搜尋</span>的比例更高</h2>
+        <div class="g3" style="margin-bottom:1rem;">
+            <div class="gc p4 reveal tc">
+                <div style="font-size:1.9rem;margin-bottom:0.4rem;">🤫</div>
+                <p style="font-size:0.83rem;font-weight:700;color:#00d4aa;margin-bottom:0.3rem;">禁忌問題效應</p>
+                <p style="font-size:0.73rem;color:#b8bde0;line-height:1.6;">客人不好意思直接搜尋，更傾向問 ChatGPT——讓 AI 引用你的答案才是關鍵</p>
+            </div>
+            <div class="gc p4 reveal tc">
+                <div style="font-size:1.9rem;margin-bottom:0.4rem;">📄</div>
+                <p style="font-size:0.83rem;font-weight:700;color:#a99bff;margin-bottom:0.3rem;">沒有官網也能做</p>
+                <p style="font-size:0.73rem;color:#b8bde0;line-height:1.6;">Notion、Substack、Google Site 都能成為 AI 引用來源，重點是<strong style="color:#a99bff;">有結構可被索引</strong></p>
+            </div>
+            <div class="gc p4 reveal tc">
+                <div style="font-size:1.9rem;margin-bottom:0.4rem;">🎯</div>
+                <p style="font-size:0.83rem;font-weight:700;color:#ff9eca;margin-bottom:0.3rem;">一頁制霸策略</p>
+                <p style="font-size:0.73rem;color:#b8bde0;line-height:1.6;">最賺錢的服務→超完整 FAQ 頁→這一頁是所有內容的母體</p>
+            </div>
+        </div>
+        <div class="gc blt p4 reveal">
+            <p style="font-size:0.76rem;color:#6b72a8;margin-bottom:0.3rem;">🤖 AI 指令模板</p>
+            <p style="font-size:0.8rem;color:#00d4aa;line-height:1.8;">"請列出『[你的服務]』這個主題中，客戶最想問但通常不好意思開口的 10 個問題，並幫我寫出每一個有溫度的完整回答，語氣像面對面諮詢"</p>
+        </div>
+    </div>
+</div>
+
+<!-- S6 AI創作者/廣告主 -->
+<div class="slide" data-slide="6">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:400px;height:400px;top:-100px;right:-70px;background:#7c6bff;opacity:0.11;"></div>
+        <div class="blob" style="width:280px;height:280px;bottom:-60px;left:-40px;background:#ff6b9d;opacity:0.09;"></div>
+    </div>
+    <div class="content">
+        <div class="pill pp reveal mb">族群 C｜AI 創作者 × 部落客 × 廣告主</div>
+        <h2 class="fam h2s reveal mb2">用 AI <span style="color:#a99bff;">自我診斷</span>：你的文章有沒有被 AI 引用？</h2>
+        <div class="g2">
+            <div>
+                <p style="font-size:0.78rem;color:#6b72a8;margin-bottom:0.5rem;font-weight:600;" class="reveal">3 步驟 AI 引用健檢</p>
+                <div style="display:flex;flex-direction:column;gap:0.6rem;">
+                    <div class="gc bl p4 reveal"><p style="font-size:0.8rem;"><strong style="color:#a99bff;">Step 1</strong> 打開 ChatGPT/Perplexity，搜尋你最重要的一個服務主題</p></div>
+                    <div class="gc bl p4 reveal"><p style="font-size:0.8rem;"><strong style="color:#a99bff;">Step 2</strong> 看它有沒有引用你的網站或 FAQ 頁面</p></div>
+                    <div class="gc bl p4 reveal"><p style="font-size:0.8rem;"><strong style="color:#a99bff;">Step 3</strong> 沒被引用？→ 檢查 H2 是問題句嗎？有 FAQ 嗎？有明確 CTA 嗎？</p></div>
+                </div>
+            </div>
+            <div>
+                <p style="font-size:0.78rem;color:#6b72a8;margin-bottom:0.5rem;font-weight:600;" class="reveal">廣告 × SEO 雙軌策略</p>
+                <div class="gc p5 reveal" style="height:calc(100% - 1.7rem);">
+                    <p style="font-size:0.8rem;color:#b8bde0;line-height:2.1;">廣告 = 今天的名單<br>SEO / AEO = 明年的系統<br><strong style="color:#a99bff;">不是競爭，是互補</strong><br><br>廣告投哪個關鍵字<br>→ SEO 先布那個主題的深度內容<br><br><strong style="color:#00d4aa;">進階：</strong>廣告落地頁加 FAQ Schema<br>→ 廣告流量同步提升 AEO 引用率</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- S7 設計/服務業 -->
+<div class="slide" data-slide="7">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:380px;height:380px;top:-90px;left:-60px;background:#ff6b9d;opacity:0.10;"></div>
+        <div class="blob" style="width:260px;height:260px;bottom:-50px;right:-30px;background:#00d4aa;opacity:0.09;"></div>
+    </div>
+    <div class="content">
+        <div class="pill ppk reveal mb">族群 D｜室內設計 × 專業服務業</div>
+        <h2 class="fam h2s reveal mb2">你的每個案例，都是<span style="color:#ff9eca;">客戶做決策的故事</span></h2>
+        <div class="g2" style="margin-bottom:0.9rem;">
+            <div class="gc p5 reveal">
+                <div class="pill pr mb">❌ 作品集思維</div>
+                <p style="font-size:0.8rem;color:#b8bde0;line-height:1.7;">一堆精美圖片，AI 讀不了，Google 也找不到你在解決什麼問題——等於白做</p>
+            </div>
+            <div class="gc p5 reveal">
+                <div class="pill pt mb">✅ 決策故事思維</div>
+                <p style="font-size:0.8rem;color:#b8bde0;line-height:1.7;"><strong style="color:#00d4aa;">起點痛點</strong>（老屋漏水/格局浪費）→ <strong style="color:#a99bff;">決策卡點</strong>（預算/施工期）→ <strong style="color:#ff9eca;">結果對比</strong>（前後照＋數字）</p>
+            </div>
+        </div>
+        <div class="gc blp p4 reveal" style="margin-bottom:0.8rem;">
+            <p style="font-size:0.76rem;color:#6b72a8;margin-bottom:0.3rem;">🤖 AI 指令模板</p>
+            <p style="font-size:0.8rem;color:#ff9eca;line-height:1.8;">"請把這個裝修案例改寫成 FAQ 格式說明，每個問題對應客戶評估裝修公司時的真實疑慮，最後附上一個明確的行動建議 CTA"</p>
+        </div>
+        <div class="gc p4 reveal" style="background:rgba(0,212,170,0.05);border:1px solid rgba(0,212,170,0.15);">
+            <p style="font-size:0.78rem;color:#b8bde0;line-height:1.7;">📌 <strong style="color:#00d4aa;">內容比例：</strong>教學文（建立信任）30% + 案例文（展示成果）50% + 比較文（幫助決策）20%</p>
+        </div>
+    </div>
+</div>
+
+<!-- S8 三重曝光 -->
+<div class="slide" data-slide="8">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:450px;height:450px;top:-110px;right:-80px;background:#7c6bff;opacity:0.13;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-70px;left:-50px;background:#00d4aa;opacity:0.10;"></div>
+        <div class="blob" style="width:200px;height:200px;top:35%;left:12%;background:#ff6b9d;opacity:0.08;"></div>
+    </div>
+    <div class="content">
+        <div class="pill pp reveal mb">整合策略</div>
+        <h2 class="fam h2s reveal mb3">三重曝光生態圈：<span class="gt3">一個主題，三種入口</span></h2>
+        <div class="g3" style="margin-bottom:1.4rem;">
+            <div class="gc bt p5 reveal tc">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">📝</div>
+                <p style="font-family:Noto Serif TC,serif;font-weight:700;color:#a99bff;margin-bottom:0.3rem;">第一重</p>
+                <p style="font-size:0.88rem;font-weight:700;margin-bottom:0.3rem;">文字內容</p>
+                <p style="font-size:0.73rem;color:#b8bde0;line-height:1.6;">問答結構 + FAQ Schema → 成為「AI 標準答案」的來源</p>
+            </div>
+            <div class="gc btp p5 reveal tc">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">🎬</div>
+                <p style="font-family:Noto Serif TC,serif;font-weight:700;color:#ff9eca;margin-bottom:0.3rem;">第二重</p>
+                <p style="font-size:0.88rem;font-weight:700;margin-bottom:0.3rem;">影片內容</p>
+                <p style="font-size:0.73rem;color:#b8bde0;line-height:1.6;">YouTube 出現在 AI 摘要下方，視覺截流，第二大 AI 引用來源</p>
+            </div>
+            <div class="gc btt p5 reveal tc">
+                <div style="font-size:2rem;margin-bottom:0.5rem;">📖</div>
+                <p style="font-family:Noto Serif TC,serif;font-weight:700;color:#00d4aa;margin-bottom:0.3rem;">第三重</p>
+                <p style="font-size:0.88rem;font-weight:700;margin-bottom:0.3rem;">深度長文</p>
+                <p style="font-size:0.73rem;color:#b8bde0;line-height:1.6;">守住自然搜尋首頁，讓高意願客戶讀完後決策</p>
+            </div>
+        </div>
+        <div class="gc p4 reveal" style="background:rgba(124,107,255,0.06);border:1px solid rgba(124,107,255,0.2);">
+            <p style="font-size:0.83rem;color:#b8bde0;line-height:1.8;">✨ <strong style="color:#a99bff;">這三重不是三個工作</strong>——是同一個主題的三種形式。用 AI 把一篇好文同時拆出 <strong style="color:#00d4aa;">FAQ、摘要、影片腳本</strong>，一次完成三件事。</p>
+        </div>
+    </div>
+</div>
+
+<!-- S9 行動清單 -->
+<div class="slide" data-slide="9">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:420px;height:420px;top:-100px;right:-70px;background:#00d4aa;opacity:0.12;"></div>
+        <div class="blob" style="width:300px;height:300px;bottom:-60px;left:-50px;background:#7c6bff;opacity:0.10;"></div>
+    </div>
+    <canvas class="particle-canvas-ambient" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content">
+        <div class="pill pt reveal mb">帶走就能用</div>
+        <h2 class="fam h2s reveal mb2">今晚回家就能做的 <span style="color:#00d4aa;">5 個動作</span></h2>
+        <div style="display:flex;flex-direction:column;gap:0.65rem;">
+            <div class="gc p4 reveal" style="display:flex;align-items:center;gap:1rem;"><div style="min-width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c6bff,#00d4aa);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;flex-shrink:0;">1</div><div><p style="font-size:0.86rem;font-weight:600;margin-bottom:0.1rem;">用 AI 問自己</p><p style="font-size:0.74rem;color:#b8bde0;">打開 ChatGPT / Perplexity，問你最重要的服務主題，看有沒有引用你</p></div></div>
+            <div class="gc p4 reveal" style="display:flex;align-items:center;gap:1rem;"><div style="min-width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#ff6b9d,#7c6bff);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;flex-shrink:0;">2</div><div><p style="font-size:0.86rem;font-weight:600;margin-bottom:0.1rem;">選一個「商業關鍵問題」</p><p style="font-size:0.74rem;color:#b8bde0;">不是「什麼是 XX」，而是「誰在評估要不要買時最想知道什麼」</p></div></div>
+            <div class="gc p4 reveal" style="display:flex;align-items:center;gap:1rem;"><div style="min-width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d4aa,#ff6b9d);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;flex-shrink:0;">3</div><div><p style="font-size:0.86rem;font-weight:600;margin-bottom:0.1rem;">把最好的案例拆成 FAQ 結構</p><p style="font-size:0.74rem;color:#b8bde0;">為什麼找你 → 你如何解決 → 結果是什麼（三個問題）</p></div></div>
+            <div class="gc p4 reveal" style="display:flex;align-items:center;gap:1rem;"><div style="min-width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#7c6bff,#ff6b9d);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;flex-shrink:0;">4</div><div><p style="font-size:0.86rem;font-weight:600;margin-bottom:0.1rem;">檢查 H2 是不是問題句</p><p style="font-size:0.74rem;color:#b8bde0;">不是的話，用 AI 改：「把這些小標改成讀者會搜尋的問題句」</p></div></div>
+            <div class="gc p4 reveal" style="display:flex;align-items:center;gap:1rem;"><div style="min-width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#00d4aa,#7c6bff);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.85rem;flex-shrink:0;">5</div><div><p style="font-size:0.86rem;font-weight:600;margin-bottom:0.1rem;">補一個「可被索引」的頁面</p><p style="font-size:0.74rem;color:#b8bde0;">沒有官網？Notion / Substack / Google Site 都能成為 AI 引用來源</p></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- S10 CLOSING -->
+<div class="slide" data-slide="10">
+    <div class="gradient-mesh">
+        <div class="blob" style="width:500px;height:500px;top:-120px;right:-90px;background:#7c6bff;opacity:0.18;"></div>
+        <div class="blob" style="width:360px;height:360px;bottom:-80px;left:-60px;background:#ff6b9d;opacity:0.14;"></div>
+        <div class="blob" style="width:240px;height:240px;top:35%;left:8%;background:#00d4aa;opacity:0.12;"></div>
+    </div>
+    <canvas class="particle-canvas" style="position:absolute;inset:0;z-index:1;"></canvas>
+    <div class="content tc">
+        <div style="font-size:76px;animation:float 3.5s ease-in-out infinite;margin-bottom:1rem;" class="reveal">🚀</div>
+        <h2 class="fam reveal" style="font-size:clamp(1.7rem,4.5vw,3.4rem);font-weight:900;margin-bottom:1rem;line-height:1.3;" ><span class="gt">如果只帶走一件事</span></h2>
+        <div class="gc p6 reveal" style="max-width:680px;margin:0 auto 1.4rem;border:1px solid rgba(124,107,255,0.25);">
+            <p style="font-size:clamp(0.95rem,2vw,1.25rem);font-family:Noto Serif TC,serif;font-weight:700;line-height:2;color:#f0f2ff;">把你手上<span style="color:#a99bff;">最賺錢的服務</span>，<br>長成一個 <span style="color:#00d4aa;">AI 看得懂</span>的核心頁面</p>
+        </div>
+        <div style="display:flex;justify-content:center;gap:0.8rem;flex-wrap:wrap;" class="reveal">
+            <div class="pill pp" style="padding:6px 14px;font-size:0.78rem;">搜尋意圖清楚</div>
+            <div class="pill ppk" style="padding:6px 14px;font-size:0.78rem;">商業情境明確</div>
+            <div class="pill pt" style="padding:6px 14px;font-size:0.78rem;">結構讓 AI 能引用</div>
+        </div>
+        <p style="font-size:0.76rem;color:#6b72a8;margin-top:1.4rem;letter-spacing:2px;" class="reveal">Alice（撿到愛麗斯）× Summer 課堂 × 2026.6.23</p>
+    </div>
+</div>
+
+</div>
+<div class="nav-controls">
+    <button class="nav-btn" onclick="changeSlide(-1)">&#8249;</button>
+    <div class="slide-dots" id="dots"></div>
+    <button class="nav-btn" onclick="changeSlide(1)">&#8250;</button>
+    <span class="slide-counter" id="counter">1 / 10</span>
+</div>
+<script>
+let cur=1;const tot=document.querySelectorAll('.slide').length;const dc=document.getElementById('dots');const ct=document.getElementById('counter');
+for(let i=1;i<=tot;i++){const d=document.createElement('div');d.className='dot'+(i===1?' active':'');d.onclick=()=>go(i);dc.appendChild(d);}
+function go(n){const p=document.querySelector('.slide.active');const nx=document.querySelector('.slide[data-slide="'+n+'"]');if(p)p.classList.remove('active');if(nx){nx.classList.add('active');anim(nx);}cur=n;upd();}
+function changeSlide(dir){let n=cur+dir;if(n<1)n=tot;if(n>tot)n=1;go(n);}
+function upd(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i+1===cur));ct.textContent=cur+' / '+tot;}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();changeSlide(1);}if(e.key==='ArrowLeft'){e.preventDefault();changeSlide(-1);}});
+let tx=0;document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});document.addEventListener('touchend',e=>{const d=tx-e.changedTouches[0].clientX;if(Math.abs(d)>50)changeSlide(d>0?1:-1);});
+function anim(slide){slide.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transition='none';el.style.opacity='0';el.style.transform='translateY(20px)';el.offsetHeight;const dy=i*0.07;el.style.transition='opacity 0.35s ease '+dy+'s,transform 0.35s ease '+dy+'s';el.style.opacity='1';el.style.transform='translateY(0)';});}
+document.addEventListener('mousemove',e=>{const s=document.querySelector('.mouse-spotlight');if(s)s.style.background='radial-gradient(600px circle at '+e.clientX+'px '+e.clientY+'px,rgba(124,107,255,0.06),transparent 40%)';});
+window.iP=function(c,o){if(!c)return;const x=c.getContext('2d');c.width=c.offsetWidth;c.height=c.offsetHeight;const iv=o.interactive!==false;const cnt=o.count||(iv?50:16);let mx=-1e3,my=-1e3;const ps=Array.from({length:cnt},()=>({x:Math.random()*c.width,y:Math.random()*c.height,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3,sz:Math.random()*2+0.8,a:Math.random()*0.3+0.08}));if(iv){c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;});c.addEventListener('mouseleave',()=>{mx=-1e3;my=-1e3;});}(function loop(){x.clearRect(0,0,c.width,c.height);ps.forEach(p=>{if(iv){const dx=p.x-mx,dy=p.y-my,d=Math.sqrt(dx*dx+dy*dy);if(d<120){const f=(120-d)/120*2;p.vx+=(dx/d)*f*0.1;p.vy+=(dy/d)*f*0.1;}}p.vx*=0.98;p.vy*=0.98;p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=c.width;if(p.x>c.width)p.x=0;if(p.y<0)p.y=c.height;if(p.y>c.height)p.y=0;x.beginPath();x.arc(p.x,p.y,p.sz,0,Math.PI*2);x.fillStyle='rgba(124,107,255,'+p.a+')';x.fill();});requestAnimationFrame(loop);})();};
+document.querySelectorAll('.particle-canvas').forEach(c=>window.iP(c,{interactive:true,count:50}));
+document.querySelectorAll('.particle-canvas-ambient').forEach(c=>window.iP(c,{interactive:false,count:16}));
+try{anim(document.querySelector('.slide.active'));}catch(e){}
+</script>
+</body>
+</html>
